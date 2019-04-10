@@ -1,4 +1,4 @@
 # Claster
-An ascetically minimalist XMPP client.
+An ascetic XMPP client.
 
 This is a work in progress.
