@@ -10,8 +10,8 @@ import (
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Hello, wanderer. This is Claster.")
 
+	fmt.Println("Hello, wanderer. This is Claster.")
 	for {
 		fmt.Print(`> `)
 		input, err := reader.ReadString('\n')
