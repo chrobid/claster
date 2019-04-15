@@ -1,4 +1,4 @@
 package main
 
-fmt main() {
+func main() {
 }
