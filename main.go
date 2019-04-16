@@ -13,13 +13,13 @@ func main() {
 
 	fmt.Println("Hello, wanderer. This is Claster.")
 	for {
-		fmt.Print(`> `)
+		fmt.Print("> ")
 		input, err := reader.ReadString('\n')
 		if err != nil {
 			log.Panic(err)
 		}
 		input = strings.TrimSuffix(input, "\n")
-		if strings.HasPrefix(input, `/`) {
+		if strings.HasPrefix(input, "/") {
 			command(input)
 		}
 	}
@@ -27,10 +27,16 @@ func main() {
 
 func command(input string) {
 	switch input {
-	case `/quit`:
+	case "/quit":
+		fmt.Println("Be well.")
 		os.Exit(0)
-	case `/exit`:
+	case "/exit":
+		fmt.Println("Be well.")
 		os.Exit(0)
+	case "/help":
+		fmt.Println("This will be a big old help menu.")
+	case "/connect":
+		fmt.Println("This is how you'll connect to a server.")
 	default:
 		fmt.Println("Sorry, I don't understand.")
 	}
