@@ -4,39 +4,63 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"strings"
+
+	"github.com/chrobid/libclaster"
 )
 
 func main() {
-	reader := bufio.NewReader(os.Stdin)
+	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("Hello, wanderer. This is Claster.")
+	fmt.Println("Hello, this is Claster.")
 	for {
 		fmt.Print("> ")
-		input, err := reader.ReadString('\n')
-		if err != nil {
-			log.Panic(err)
+		scanner.Scan()
+		if scanner.Err() != nil {
+			log.Println(scanner.Err())
+			continue
 		}
-		input = strings.TrimSuffix(input, "\n")
-		if strings.HasPrefix(input, "/") {
-			command(input)
+		if strings.HasPrefix(scanner.Text(), "/") {
+			command(scanner.Text())
 		}
 	}
 }
 
 func command(input string) {
+	scanner := bufio.NewScanner(os.Stdin)
+	var client net.Conn
+	var err error
+
 	switch input {
 	case "/quit":
 		fmt.Println("Be well.")
 		os.Exit(0)
+
 	case "/exit":
 		fmt.Println("Be well.")
 		os.Exit(0)
+
 	case "/help":
 		fmt.Println("This will be a big old help menu.")
+
 	case "/connect":
-		fmt.Println("This is how you'll connect to a server.")
+		fmt.Print("Username: ")
+		scanner.Scan()
+		if scanner.Err() != nil {
+			log.Println(scanner.Err())
+			break
+		}
+		fmt.Println("Attempting to connect...")
+		client, err = libclaster.NewClient(scanner.Text())
+		if err != nil {
+			log.Println(err)
+		} else {
+			fmt.Println("Connection established")
+			fmt.Println("Connected to ", client.RemoteAddr())
+		}
+
 	default:
 		fmt.Println("Sorry, I don't understand.")
 	}
