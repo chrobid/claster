@@ -47,7 +47,13 @@ func command(input string) {
 
 	case "/connect":
 		fmt.Print("Username: ")
-		scanner.Scan()
+		username := scanner.Scan()
+		if scanner.Err() != nil {
+			log.Println(scanner.Err())
+			break
+		}
+		fmt.Print("Password: ")
+		password := scanner.Scan()
 		if scanner.Err() != nil {
 			log.Println(scanner.Err())
 			break
