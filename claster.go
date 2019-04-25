@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"net"
 	"os"
+	"os/exec"
 	"strings"
 
-	"github.com/chrobid/libclaster"
+	"github.com/mattn/go-xmpp"
 )
 
 func main() {
@@ -30,8 +30,6 @@ func main() {
 
 func command(input string) {
 	scanner := bufio.NewScanner(os.Stdin)
-	var client net.Conn
-	var err error
 
 	switch input {
 	case "/quit":
@@ -47,27 +45,46 @@ func command(input string) {
 
 	case "/connect":
 		fmt.Print("Username: ")
-		username := scanner.Scan()
+		scanner.Scan()
 		if scanner.Err() != nil {
 			log.Println(scanner.Err())
 			break
 		}
+		jid := scanner.Text()
+		if strings.Count(jid, "@") != 1 {
+			fmt.Println("Invalid username")
+			break
+		}
+		host := getHostname(jid)
+
 		fmt.Print("Password: ")
-		password := scanner.Scan()
+		scanner.Scan()
 		if scanner.Err() != nil {
 			log.Println(scanner.Err())
 			break
 		}
+		// *at least* clear the damn screen, since the password's visible
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+		pass := scanner.Text()
 		fmt.Println("Attempting to connect...")
-		client, err = libclaster.NewClient(scanner.Text())
+		client, err := xmpp.NewClient(host, jid, pass, false)
 		if err != nil {
+			fmt.Println("Attempt failed :(")
 			log.Println(err)
 		} else {
 			fmt.Println("Connection established")
-			fmt.Println("Connected to ", client.RemoteAddr())
+			client = client
 		}
 
 	default:
 		fmt.Println("Sorry, I don't understand.")
 	}
+}
+
+func getHostname(jid string) string {
+	parts := strings.Split(jid, "@")
+	hostname := parts[1]
+	return hostname
 }
